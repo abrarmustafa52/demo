@@ -4,26 +4,29 @@ import datetime
 
 
 from django.db.models import Q
+from utils.consts import * 
 from django.core import * 
 from django.shortcuts import *
 from django.contrib.gis.geos import *
+from demoapp_api.models import TableOfContentModel
+from demoapp_api.serializers import TableOfContentSer
 from rest_framework.response import * 
+from rest_framework.views import * 
 from rest_framework.permissions import *    
 from rest_framework.authentication import * 
 from rest_framework.authtoken.models import *  
 
-
+ 
 # Create your views here.   
 
 
-class Categories(APIView):
+class TableOfContentView(APIView):
  
     def get(self, request):
-     
+        data, isSuccess , msg =None, False, "error while performing operation" 
         try: 
-            _categories = CategoryModel.objects.all() 
-            categoriesresponce = CategorySerializer(_categories, many=True) 
-            data=categoriesresponce.data
+            _content = TableOfContentModel.objects.all() 
+            data = TableOfContentSer(_content, many=True) .data
             msg=SUCCESS
             isSuccess=True 
 
