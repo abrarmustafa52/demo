@@ -1,0 +1,7 @@
+djangorestframework
+APScheduler==3.6.3
+requests==2.23.0
+pyfcm==1.4.7
+fcm-django==0.3.4
+virtualenv==20.13.2
+drf-yasg 
