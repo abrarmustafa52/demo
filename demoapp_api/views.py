@@ -4,24 +4,32 @@ import datetime
 
 
 from django.db.models import Q
+from demoapp_api.models import *
 from utils.consts import * 
+from demoapp_api.models import *
+from demoapp_api.post_serializer import *
+from demoapp_api.serializers import *
+from utils.permission import * 
+
+
+from django.db.models import Q
 from django.core import * 
 from django.shortcuts import *
-from django.contrib.gis.geos import *
-from demoapp_api.models import TableOfContentModel
-from demoapp_api.serializers import TableOfContentSer
-from rest_framework.response import * 
 from rest_framework.views import * 
-from rest_framework.permissions import *    
+from django.contrib.gis.geos import *
+from rest_framework.response import * 
+from rest_framework.permissions import *   
+from django.contrib.auth.hashers import *  
 from rest_framework.authentication import * 
 from rest_framework.authtoken.models import *  
-
  
 # Create your views here.   
 
 
 class TableOfContentView(APIView):
  
+    authentication_classes = [] #disables authentication
+    permission_classes = [] #disables permission
     def get(self, request):
         data, isSuccess , msg =None, False, "error while performing operation" 
         try: 
@@ -30,92 +38,56 @@ class TableOfContentView(APIView):
             msg=SUCCESS
             isSuccess=True 
 
-        except:
+        except Exception as ex:
             data=None
-            msg="failed while fetching categories" 
+            msg="failed while fetching table of content "+str(ex) 
+            isSuccess=False 
+        return Response({"data": data, "msg": msg, "issuccess": isSuccess}) 
+
+   
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [SAFE_METHOD_Permission]
+    def post(self, request):
+        data, isSuccess , msg =None, False, "error while performing operation" 
+        try:
+            ser = PostTableOfContentSer(data=request.data)
+            if not ser.is_valid(): 
+                msg=ser.errors
+                raise Exception('My error!')
+
+            _tableContent = TableOfContentModel(description=ser.validated_data["description"])
+            if ser.validated_data["parentcontent_id"]:
+                _tableContent.parent_section =  TableOfContentModel.objects.get(id=ser.validated_data["parentcontent_id"])
+            _tableContent.save() 
+            msg=SUCCESS
+            isSuccess=True  
+    
+        except Exception as ex:
+            data=None
+            msg="failed while adding table of content "+str(ex) 
             isSuccess=False 
         return Response({"data": data, "msg": msg, "issuccess": isSuccess}) 
 
     authentication_classes = [TokenAuthentication]
-    permission_classes = (IsAuthenticated,)
-    def post(self, request):
-        ser = N_PostCategorySerializer(data=request.data)
-         
-        if ser.is_valid():
-            
-            if not request.user.is_superuser:
-                msg="not have admin level permissions" 
-                isSuccess=False  
-            else:
-                try: 
-                    _category = CategoryModel(title=ser.validated_data["title"])
-                    _category.image = ser.validated_data["image"]   
-                    _category.save()
-                    msg=SUCCESS
-                    isSuccess=True 
-    
-                except:
-                    msg="error while adding category" 
-                    isSuccess=False  
-        else : 
-            msg=ser.errors 
-            isSuccess=False  
-         
-        return Response({"data": None, "msg": msg, "issuccess": isSuccess}) 
-  
-
-    authentication_classes = [TokenAuthentication]
-    permission_classes = (IsAuthenticated,) 
+    permission_classes = [SAFE_METHOD_Permission]
     def put(self, request):
-        ser = N_PutCategorySerializer(data=request.data)
-         
-        if ser.is_valid():
-            
-            if not request.user.is_superuser:
-                msg="not have admin level permissions" 
-                isSuccess=False  
-            else:
-                try: 
-                    category = CategoryModel.objects.get(id=ser.validated_data["categoryId"])
-                    category.title = ser.validated_data["title"]
-                    category.image = ser.validated_data["image"]
-                    category.save()  
-                    msg=SUCCESS
-                    isSuccess=True  
+        data, isSuccess , msg =None, False, "error while performing operation" 
+        try:
+            ser = PutTableOfContentSer(data=request.data)
+            if not ser.is_valid(): 
+                msg=ser.errors
+                raise Exception('My error!')
 
-                except:
-                    msg="error while updating category" 
-                    isSuccess=False 
-                        
-                  
-        else : 
-            msg=ser.errors 
-            isSuccess=False  
-         
-        return Response({"data": None, "msg": msg, "issuccess": isSuccess}) 
- 
-    authentication_classes = [TokenAuthentication]
-    permission_classes = (IsAuthenticated,)
-    def delete(self, request):
-        ser = N_DeleteCategorySerializer(data=request.data)
-         
-        if ser.is_valid()  :
-            if not request.user.is_superuser:
-                msg="not have admin level permissions" 
-                isSuccess=False  
-            else:
-                try: 
-                    _category = CategoryModel.objects.get(id=ser.validated_data["categoryId"])
-                    _category.delete()  
-                    msg=SUCCESS
-                    isSuccess=True  
-                except:
-                    msg="error while deleting category" 
-                    isSuccess=False  
-        else : 
-            msg=ser.errors 
-            isSuccess=False  
-         
-        return Response({"data": None, "msg": msg, "issuccess": isSuccess}) 
-  
-   
+            _tableContent = TableOfContentModel.objects.get(id=ser.validated_data["table_id"])
+            _tableContent.description = ser.validated_data["description"]
+            if ser.validated_data["parentcontent_id"]:
+                _tableContent.parent_section =  TableOfContentModel.objects.get(id=ser.validated_data["parentcontent_id"])
+            _tableContent.save() 
+            msg=SUCCESS
+            isSuccess=True  
+    
+        except Exception as ex:
+            data=None
+            msg="failed while updating table of content "+str(ex) 
+            isSuccess=False 
+        return Response({"data": data, "msg": msg, "issuccess": isSuccess}) 

@@ -7,7 +7,9 @@ from django.db.models import Q
 from users.models import UserModel
 from utils.consts import * 
 from users.models import *
+from users.put_serializer import *
 from users.serializers import UserSer
+from utils.permission import * 
 
 
 from django.db.models import Q
@@ -43,34 +45,11 @@ class UserView(APIView):
             isSuccess=False 
         return Response({"data": data, "msg": msg, "issuccess": isSuccess}) 
 
-    def post(self, request):
-        ser = N_PostCategorySerializer(data=request.data)
-         
-        if ser.is_valid():
-            
-            if not request.user.is_superuser:
-                msg="not have admin level permissions" 
-                isSuccess=False  
-            else:
-                try: 
-                    _category = CategoryModel(title=ser.validated_data["title"])
-                    _category.image = ser.validated_data["image"]   
-                    _category.save()
-                    msg=SUCCESS
-                    isSuccess=True 
     
-                except:
-                    msg="error while adding category" 
-                    isSuccess=False  
-        else : 
-            msg=ser.errors 
-            isSuccess=False  
-         
-        return Response({"data": None, "msg": msg, "issuccess": isSuccess}) 
-  
-
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [SAFE_METHOD_Permission]
     def put(self, request):
-        ser = N_PutCategorySerializer(data=request.data)
+        ser = PutUserSerializer(data=request.data)
          
         if ser.is_valid():
             
@@ -79,15 +58,13 @@ class UserView(APIView):
                 isSuccess=False  
             else:
                 try: 
-                    category = CategoryModel.objects.get(id=ser.validated_data["categoryId"])
-                    category.title = ser.validated_data["title"]
-                    category.image = ser.validated_data["image"]
-                    category.save()  
+                    request.user.fullname = ser.validated_data["fullname"]
+                    request.user.save()  
                     msg=SUCCESS
                     isSuccess=True  
 
                 except:
-                    msg="error while updating category" 
+                    msg="error while updating user" 
                     isSuccess=False 
                         
                   
@@ -96,27 +73,5 @@ class UserView(APIView):
             isSuccess=False  
          
         return Response({"data": None, "msg": msg, "issuccess": isSuccess}) 
+
  
-    def delete(self, request):
-        ser = N_DeleteCategorySerializer(data=request.data)
-         
-        if ser.is_valid()  :
-            if not request.user.is_superuser:
-                msg="not have admin level permissions" 
-                isSuccess=False  
-            else:
-                try: 
-                    _category = CategoryModel.objects.get(id=ser.validated_data["categoryId"])
-                    _category.delete()  
-                    msg=SUCCESS
-                    isSuccess=True  
-                except:
-                    msg="error while deleting category" 
-                    isSuccess=False  
-        else : 
-            msg=ser.errors 
-            isSuccess=False  
-         
-        return Response({"data": None, "msg": msg, "issuccess": isSuccess}) 
-  
-   

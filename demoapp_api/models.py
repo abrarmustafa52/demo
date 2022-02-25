@@ -7,5 +7,5 @@ from django.db import models
 
 class TableOfContentModel(models.Model):
     description = models.CharField(max_length=2000, null=False, blank=False)
-    sub_section = models.ForeignKey("self", on_delete=models.SET_NULL, related_name='tableofcontent_sub_section', null=True, blank=True) 
+    parent_section = models.ForeignKey("self", on_delete=models.SET_NULL, related_name='tableofcontent_parent_section', null=True, blank=True) 
     
