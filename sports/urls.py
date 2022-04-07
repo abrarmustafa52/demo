@@ -3,7 +3,7 @@ from django.urls import *
 from django.contrib import * 
 
 # app level 
-from .views import *   
+from ..demoapp_api.views import *   
 
 
 class ApiUrls():

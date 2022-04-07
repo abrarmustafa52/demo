@@ -29,7 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
-AUTH_USER_MODEL = 'users.UserModel'
+AUTH_USER_MODEL = 'users.players'
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
     'rest_framework',
-    'demoapp_api',
     'users',
+    'sports',
 ]
 
 MIDDLEWARE = [
@@ -89,13 +89,21 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 import os
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
-        'PORT': 5432,
-    }
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',#'django.db.backends.postgresql_psycopg2',
+        'NAME': 'foodiedb',
+        'USER': 'foodieuser',
+        'PASSWORD': 'foodiepass',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': os.environ.get('POSTGRES_NAME'),
+    #     'USER': os.environ.get('POSTGRES_USER'),
+    #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+    #     'HOST': 'db',
+    #     'PORT': 5432,
+    # }
 }
 
 # Password validation
