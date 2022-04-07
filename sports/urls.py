@@ -3,13 +3,13 @@ from django.urls import *
 from django.contrib import * 
 
 # app level 
-from ..demoapp_api.views import *   
+from .views import *   
 
 
 class ApiUrls():
     def getUrls():
         urlpatterns = [ 
-            path('content', TableOfContentView.as_view()),    
+            path('content', SportsView.as_view()),    
         ]
         return urlpatterns
         

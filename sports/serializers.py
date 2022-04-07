@@ -1,11 +1,12 @@
+from users.models import players
 from .models import * 
 from rest_framework import serializers
  
 
 # -------------------------------------------- REGISTRATION MODELS------------------------------------------ #
-class TableOfContentSer(serializers.ModelSerializer):
+class PlayerSer(serializers.ModelSerializer):
     class Meta:
-        model = TableOfContentModel
+        model = players
         fields = '__all__'
       
  

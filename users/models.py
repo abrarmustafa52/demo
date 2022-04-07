@@ -5,6 +5,6 @@ from django.contrib.auth.models import *
 
 class players(AbstractUser):
     email               = models.EmailField(max_length=25,               null=False, blank=False,    unique=True) 
-    sports              = models.ManyToManyField('sports.sports',       related_name='sports')
+    sports              = models.ManyToManyField('sports.sports' )
     createdAt           = models.DateTimeField(auto_now_add=True) 
 
