@@ -14,3 +14,4 @@ class SportsViewTest(TestCase):
     def test_isvalid_noplayers(self):
         response = self.client.get("/nplayers")
         self.assertEqual(response.status_code, 200)
+
