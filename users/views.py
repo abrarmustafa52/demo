@@ -34,8 +34,8 @@ class UserView(APIView):
     def get(self, request):
         data, isSuccess , msg =None, False, "error while performing operation" 
         try: 
-            _users = UserModel.objects.all() 
-            data = UserSer(_users, many=True) .data
+            _players = players.objects.all() 
+            data = UserSer(_players, many=True) .data
             msg=SUCCESS
             isSuccess=True 
 
@@ -44,34 +44,4 @@ class UserView(APIView):
             msg="failed while fetching users"+str(ex) 
             isSuccess=False 
         return Response({"data": data, "msg": msg, "issuccess": isSuccess}) 
-
-    
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [SAFE_METHOD_Permission]
-    def put(self, request):
-        ser = PutUserSerializer(data=request.data)
-         
-        if ser.is_valid():
-            
-            if not request.user.is_superuser:
-                msg="not have admin level permissions" 
-                isSuccess=False  
-            else:
-                try: 
-                    request.user.fullname = ser.validated_data["fullname"]
-                    request.user.save()  
-                    msg=SUCCESS
-                    isSuccess=True  
-
-                except:
-                    msg="error while updating user" 
-                    isSuccess=False 
-                        
-                  
-        else : 
-            msg=ser.errors 
-            isSuccess=False  
-         
-        return Response({"data": None, "msg": msg, "issuccess": isSuccess}) 
-
  

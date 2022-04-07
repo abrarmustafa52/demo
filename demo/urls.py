@@ -22,5 +22,5 @@ from users.urls import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include(UserUrls.getUrls())),
-    path('api/exec/', include(ApiUrls.getUrls())), 
+    path('api/sports/', include(ApiUrls.getUrls())), 
 ]

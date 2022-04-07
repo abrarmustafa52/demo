@@ -26,7 +26,7 @@ from django.db.models import Count
 # Create your views here.   
 
 
-class SportsView(APIView):
+class SportsViewNPlayers(APIView):
  
     authentication_classes = [] #disables authentication
     permission_classes = [] #disables permission
@@ -34,7 +34,26 @@ class SportsView(APIView):
         data, isSuccess , msg =None, False, "error while performing operation" 
         try: 
             _content = sports.objects.annotate(c=Count('players')).filter(c__lt=4)  # 4 here is as N players 
-            data = PlayerSer(_content, many=True) .data
+            data = SportsSer(_content, many=True) .data
+            msg=SUCCESS
+            isSuccess=True 
+
+        except Exception as ex:
+            data=None
+            msg="failed while fetching data "+str(ex) 
+            isSuccess=False 
+        return Response({"data": data, "msg": msg, "issuccess": isSuccess}) 
+
+
+class SportsViewNoPlayers(APIView):
+ 
+    authentication_classes = [] #disables authentication
+    permission_classes = [] #disables permission
+    def get(self, request):
+        data, isSuccess , msg =None, False, "error while performing operation" 
+        try: 
+            _content = sports.objects.annotate(c=Count('players')).filter(c__lt=0)   
+            data = SportsSer(_content, many=True) .data
             msg=SUCCESS
             isSuccess=True 
 

@@ -9,7 +9,8 @@ from .views import *
 class ApiUrls():
     def getUrls():
         urlpatterns = [ 
-            path('content', SportsView.as_view()),    
+            path('nplayers', SportsViewNPlayers.as_view()),  
+            path('noplayers', SportsViewNoPlayers.as_view()),    
         ]
         return urlpatterns
         

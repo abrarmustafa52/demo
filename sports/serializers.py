@@ -4,9 +4,9 @@ from rest_framework import serializers
  
 
 # -------------------------------------------- REGISTRATION MODELS------------------------------------------ #
-class PlayerSer(serializers.ModelSerializer):
+class SportsSer(serializers.ModelSerializer):
     class Meta:
-        model = players
+        model = sports
         fields = '__all__'
       
  
