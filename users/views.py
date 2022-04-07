@@ -23,9 +23,7 @@ from django.contrib.auth.hashers import *
 from rest_framework.authentication import * 
 from rest_framework.authtoken.models import *  
  
-# Create your views here.   
-
-
+#  apis are already very fast
 # Create your views here.
 
 class UserView(APIView):
